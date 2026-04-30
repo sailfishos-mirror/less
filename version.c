@@ -1102,7 +1102,7 @@ v697  4/19/26   Fix bug using PCRE2 with more than 5 parentheses; discard
 v698  4/23/26   Fix bad display after message in narrow terminal; replace
                 LESS_OSC8_xxx with LESS_OSC8_OPEN_xxx; add \kpe to lesskey.
 v699  4/23/26   Add less-osc8-*.bash files to distribution.
-v700
+v700  4/30/26   Add \kpe to lesskey; improve less-osc8-* scripts.
 */
 
-char version[] = "700x";
+char version[] = "700";
