@@ -368,12 +368,20 @@ static void expand_special_keys(unsigned char *table, size_t len)
 			repl = special_key_str(fm[1]);
 			klen = fm[2];
 			fm += klen;
+			if (klen < 3)
+			{
+				/* Malformed entry; N cannot be less than 3.
+				 * Skip this entry and (for simplicity) the rest of the table. */
+				return;
+			}
 			if (repl == NULL || strlen(repl) > klen)
 				repl = "\377";
 			while (*repl != '\0')
 				*to++ = (unsigned char) *repl++; /*{{type-issue}}*/
 		}
 		*to++ = '\0';
+		if (fm + 2 > table + len)
+			return; /* last entry is truncated */
 		/*
 		 * Fill any unused bytes between end of command and 
 		 * the action byte with A_SKIP.
@@ -830,26 +838,42 @@ static size_t cmd_match(constant char *goal, constant char *str)
 
 /*
  * Return pointer to next command table entry.
- * Also return the action and the extra string from the entry.
+ * Also return the action and the extra string from the current entry.
+ * Return NULL if the entry is truncated.
  */
-static constant unsigned char * cmd_next_entry(constant unsigned char *entry, mutable int *action, mutable constant unsigned char **extra, mutable size_t *cmdlen)
+static constant unsigned char * cmd_next_entry(constant unsigned char *entry, constant unsigned char *end, mutable int *action, mutable constant unsigned char **extra, mutable size_t *cmdlen)
 {
 	int a;
 	constant unsigned char *oentry = entry;
-	while (*entry != '\0') /* skip cmd */
+	for (;;) /* skip to null at end of cmd */
+	{
+		if (entry >= end)
+			return NULL;
+		if (*entry == '\0')
+			break;
 		++entry;
+	}
 	if (cmdlen != NULL)
 		*cmdlen = ptr_diff(entry, oentry);
-	do 
-		a = *++entry; /* get action */
-	while (a == A_SKIP);
+	do { /* skip any A_SKIP bytes between cmd and action */
+		if (++entry >= end)
+			return NULL;
+		a = *entry;
+	} while (a == A_SKIP);
 	++entry; /* skip action */
 	if (extra != NULL)
 		*extra = (a & A_EXTRA) ? entry : NULL;
 	if (a & A_EXTRA)
 	{
-		while (*entry++ != '\0') /* skip extra string */
-			continue;
+		for (;;) /* skip to null at end of extra string */
+		{
+			if (entry >= end)
+				return NULL;
+			if (*entry == '\0')
+				break;
+			++entry;
+		}
+		++entry; /* skip null at end of extra string */
 		a &= ~A_EXTRA;
 	}
 	if (action != NULL)
@@ -867,7 +891,9 @@ static lbool table_has_stop(struct tablelist *t)
 	while (entry < t->t_end)
 	{
 		int action;
-		entry = cmd_next_entry(entry, &action, NULL, NULL);
+		entry = cmd_next_entry(entry, t->t_end, &action, NULL, NULL);
+		if (entry == NULL)
+			break;
 		if (action == A_END_LIST)
 			return TRUE;
 	}
@@ -915,10 +941,16 @@ static int cmd_decode(struct tablelist *tlist, constant char *cmd, lbool anchore
 			tmatch = (strcmp((constant char *) table, cmd) == 0) ? strlen(cmd) : 0;
 		else
 			tmatch = cmd_match((constant char *) table, cmd);
-		table = cmd_next_entry(table, &taction, &textra, &tcmdlen);
+		table = cmd_next_entry(table, tlist->t_end, &taction, &textra, &tcmdlen);
+		if (table == NULL)
+		{
+			/* Truncated entry at end of table; move to next table. */
+			tlist = tlist->t_next;
+			continue;
+		}
 		if (table >= endtable)
 		{
-			/* End of table; move to next table. */
+			/* Last entry in table; move to next table. */
 			tlist = tlist->t_next;
 			table = NULL;
 		}
