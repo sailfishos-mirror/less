@@ -277,6 +277,26 @@ static constant char * tstr(char **pp, int xlate)
 				case 'x': ch = SK_DELETE; break;
 				case 'X': ch = SK_CTL_DELETE; break;
 				case '1': ch = SK_F1; break;
+				case '^':
+					switch (*++p)
+					{
+					case 'b': ch = SK_CTL_BACKSPACE; break;
+					case 'e': ch = SK_CTL_END; break;
+					case 'h': ch = SK_CTL_HOME; break;
+					case 'l': ch = SK_CTL_LEFT_ARROW; break;
+					case 'r': ch = SK_CTL_RIGHT_ARROW; break;
+					case 'x': ch = SK_CTL_DELETE; break;
+					}
+					break;
+				case '+':
+					switch (*++p)
+					{
+					case 'e': ch = SK_SHIFT_END; break;
+					case 'h': ch = SK_SHIFT_HOME; break;
+					case 'l': ch = SK_SHIFT_LEFT_ARROW; break;
+					case 'r': ch = SK_SHIFT_RIGHT_ARROW; break;
+					}
+					break;
 				case 'p':
 					switch (*++p)
 					{
