@@ -837,6 +837,22 @@ static size_t cmd_match(constant char *goal, constant char *str)
 }
 
 /*
+ * Skip to next null byte in entry, and return pointer to it.
+ * Return NULL if no null byte is found before end.
+ */
+static constant unsigned char * skip_to_null(constant unsigned char *entry, constant unsigned char *end)
+{
+	for (;;)
+	{
+		if (entry >= end)
+			return NULL;
+		if (*entry == '\0')
+			return entry;
+		++entry;
+	}
+}
+
+/*
  * Return pointer to next command table entry.
  * Also return the action and the extra string from the current entry.
  * Return NULL if the entry is truncated.
@@ -845,14 +861,9 @@ static constant unsigned char * cmd_next_entry(constant unsigned char *entry, co
 {
 	int a;
 	constant unsigned char *oentry = entry;
-	for (;;) /* skip to null at end of cmd */
-	{
-		if (entry >= end)
-			return NULL;
-		if (*entry == '\0')
-			break;
-		++entry;
-	}
+	entry = skip_to_null(entry, end); /* skip to end of cmd */
+	if (entry == NULL)
+		return NULL;
 	if (cmdlen != NULL)
 		*cmdlen = ptr_diff(entry, oentry);
 	do { /* skip any A_SKIP bytes between cmd and action */
@@ -865,14 +876,9 @@ static constant unsigned char * cmd_next_entry(constant unsigned char *entry, co
 		*extra = (a & A_EXTRA) ? entry : NULL;
 	if (a & A_EXTRA)
 	{
-		for (;;) /* skip to null at end of extra string */
-		{
-			if (entry >= end)
-				return NULL;
-			if (*entry == '\0')
-				break;
-			++entry;
-		}
+		entry = skip_to_null(entry, end); /* skip to end of extra string */
+		if (entry == NULL)
+			return NULL;
 		++entry; /* skip null at end of extra string */
 		a &= ~A_EXTRA;
 	}
