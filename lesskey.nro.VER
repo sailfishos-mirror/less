@@ -112,6 +112,8 @@ l l.
 \ekb	BACKSPACE (may be different than \eb)
 \ek\*^b or \ekB	ctrl-BACKSPACE
 \ekd	DOWN ARROW
+\ek\*^d	ctrl-DOWN ARROW
+\ek+d	shift-DOWN ARROW
 \ekD	PAGE DOWN
 \eke	END
 \ek\*^e or \ekE	ctrl-END
@@ -128,9 +130,12 @@ l l.
 \ek+r or \ekS	shift-RIGHT ARROW
 \ekt	BACKTAB
 \eku	UP ARROW
+\ek\*^u	ctrl-UP ARROW
+\ek+u	shift-UP ARROW
 \ekU	PAGE UP
 \ekx	DELETE
 \ek\*^x or \ekX	ctrl-DELETE
+\ek+x	shift-DELETE
 \ek1	F1
 \ekp1	lower left key on the numeric keypad
 \ekp2	lower center key on the numeric keypad

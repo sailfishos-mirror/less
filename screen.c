@@ -1057,11 +1057,16 @@ public constant char * special_key_str(int key)
 	static char k_left[]            = { '\340', PCK_LEFT, 0  };
 	static char k_ctl_right[]       = { '\340', PCK_CTL_RIGHT, 0  };
 	static char k_ctl_left[]        = { '\340', PCK_CTL_LEFT, 0  };
+	static char k_ctl_up[]          = { '\340', PCK_CTL_UP, 0  };
+	static char k_ctl_down[]        = { '\340', PCK_CTL_DOWN, 0  };
 	static char k_shift_right[]     = { '\340', PCK_SHIFT_RIGHT, 0  };
 	static char k_shift_left[]      = { '\340', PCK_SHIFT_LEFT, 0  };
+	static char k_shift_up[]        = { '\340', PCK_SHIFT_UP, 0  };
+	static char k_shift_down[]      = { '\340', PCK_SHIFT_DOWN, 0  };
 	static char k_insert[]          = { '\340', PCK_INSERT, 0  };
 	static char k_delete[]          = { '\340', PCK_DELETE, 0  };
 	static char k_ctl_delete[]      = { '\340', PCK_CTL_DELETE, 0  };
+	static char k_shift_delete[]    = { '\340', PCK_SHIFT_DELETE, 0  };
 	static char k_ctl_backspace[]   = { '\177', 0 };
 	static char k_backspace[]       = { '\b', 0 };
 	static char k_home[]            = { '\340', PCK_HOME, 0 };
@@ -1164,17 +1169,32 @@ public constant char * special_key_str(int key)
 	case SK_CTL_RIGHT_ARROW:
 		s = k_ctl_right;
 		break;
+	case SK_CTL_UP_ARROW:
+		s = k_ctl_up;
+		break;
+	case SK_CTL_DOWN_ARROW:
+		s = k_ctl_down;
+		break;
 	case SK_SHIFT_LEFT_ARROW:
 		s = k_shift_left;
 		break;
 	case SK_SHIFT_RIGHT_ARROW:
 		s = k_shift_right;
 		break;
+	case SK_SHIFT_UP_ARROW:
+		s = k_shift_up;
+		break;
+	case SK_SHIFT_DOWN_ARROW:
+		s = k_shift_down;
+		break;
 	case SK_CTL_BACKSPACE:
 		s = k_ctl_backspace;
 		break;
 	case SK_CTL_DELETE:
 		s = k_ctl_delete;
+		break;
+	case SK_SHIFT_DELETE:
+		s = k_shift_delete;
 		break;
 	case SK_BACKSPACE:
 		s = k_backspace;
@@ -1246,11 +1266,23 @@ public constant char * special_key_str(int key)
 	case SK_SHIFT_LEFT_ARROW:
 		s = ltgetstr("kLFT", NULL, &sp);
 		break;
+	case SK_SHIFT_UP_ARROW:
+		s = ltgetstr("kUP", NULL, &sp);
+		break;
+	case SK_SHIFT_DOWN_ARROW:
+		s = ltgetstr("kDN", NULL, &sp);
+		break;
 	case SK_CTL_RIGHT_ARROW:
 		s = ltgetstr("kRIT5", NULL, &sp);
 		break;
 	case SK_CTL_LEFT_ARROW:
 		s = ltgetstr("kLFT5", NULL, &sp);
+		break;
+	case SK_CTL_UP_ARROW:
+		s = ltgetstr("kUP5", NULL, &sp);
+		break;
+	case SK_CTL_DOWN_ARROW:
+		s = ltgetstr("kDN5", NULL, &sp);
 		break;
 	case SK_F1:
 		s = ltgetstr("kf1", "k1", &sp);
@@ -1315,6 +1347,12 @@ public constant char * special_key_str(int key)
 				tbuf[1] = '\0';
 				s = tbuf;
 		}
+		break;
+	case SK_CTL_DELETE:
+		s = ltgetstr("kDC5", NULL, &sp);
+		break;
+	case SK_SHIFT_DELETE:
+		s = ltgetstr("kDC", NULL, &sp);
 		break;
 	case SK_BACKSPACE:
 		s = ltgetstr("kbs", "kb", &sp);
@@ -3351,6 +3389,12 @@ static lbool win32_scan_code(XINPUT_RECORD *xip)
 		case PCK_LEFT: /* left arrow */
 			scan = PCK_CTL_LEFT;
 			break;
+		case PCK_UP: /* up arrow */
+			scan = PCK_CTL_UP;
+			break;
+		case PCK_DOWN: /* down arrow */
+			scan = PCK_CTL_DOWN;
+			break;
 		case PCK_DELETE: /* delete */
 			scan = PCK_CTL_DELETE;
 			break;
@@ -3374,6 +3418,15 @@ static lbool win32_scan_code(XINPUT_RECORD *xip)
 					break;
 				case PCK_LEFT:
 					scan = PCK_SHIFT_LEFT;
+					break;
+				case PCK_UP:
+					scan = PCK_SHIFT_UP;
+					break;
+				case PCK_DOWN:
+					scan = PCK_SHIFT_DOWN;
+					break;
+				case PCK_DELETE:
+					scan = PCK_SHIFT_DELETE;
 					break;
 				case PCK_HOME:
 					scan = PCK_SHIFT_HOME;

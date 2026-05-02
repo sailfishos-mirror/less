@@ -180,6 +180,10 @@
 #define SK_CTL_END             37
 #define SK_SHIFT_LEFT_ARROW    38
 #define SK_SHIFT_RIGHT_ARROW   39
-#define SK_PAD_ENTER           41
-
 #define SK_CONTROL_K           40
+#define SK_PAD_ENTER           41
+#define SK_SHIFT_UP_ARROW      42
+#define SK_SHIFT_DOWN_ARROW    43
+#define SK_CTL_UP_ARROW        44
+#define SK_CTL_DOWN_ARROW      45
+#define SK_SHIFT_DELETE        46
