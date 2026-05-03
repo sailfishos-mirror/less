@@ -376,12 +376,18 @@ static void expand_special_keys(unsigned char *table, size_t len)
 			}
 			if (repl == NULL || strlen(repl) > klen)
 				repl = "\377";
+			if (to + strlen(repl) + 1 > table + len)
+			{
+				/* Replacement string won't fit in table.
+				 * This cannot happen unless klen is wrong. */
+				return;
+			}
 			while (*repl != '\0')
 				*to++ = (unsigned char) *repl++; /*{{type-issue}}*/
 		}
-		*to++ = '\0';
 		if (fm + 2 > table + len)
 			return; /* last entry is truncated */
+		*to++ = '\0';
 		/*
 		 * Fill any unused bytes between end of command and 
 		 * the action byte with A_SKIP.
