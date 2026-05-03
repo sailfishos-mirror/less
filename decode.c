@@ -208,6 +208,17 @@ static unsigned char cmdtable[] =
 	SK(SK_PAD_COMMA),0,             A_NOACTION,
 	SK(SK_PAD_ZERO),0,              A_NOACTION|A_EXTRA,   '0',0,
 	SK(SK_PAD_CENTER),0,            A_NOACTION,
+	SK(SK_CTL_UP_ARROW),0,          A_NOACTION,
+	SK(SK_CTL_DOWN_ARROW),0,        A_NOACTION,
+	SK(SK_SHIFT_UP_ARROW),0,        A_NOACTION,
+	SK(SK_SHIFT_DOWN_ARROW),0,      A_NOACTION,
+	SK(SK_DELETE),0,                A_NOACTION,
+	SK(SK_CTL_DELETE),0,            A_NOACTION,
+	SK(SK_SHIFT_DELETE),0,          A_NOACTION,
+	SK(SK_INSERT),0,                A_NOACTION,
+	SK(SK_BACKTAB),0,               A_NOACTION,
+	SK(SK_BACKSPACE),0,             A_NOACTION,
+	SK(SK_CTL_BACKSPACE),0,         A_NOACTION,
 
 	ESC,'[','2','0','0','~',0,      A_START_PASTE,
 	ESC,'[','2','0','1','~',0,      A_END_PASTE,
@@ -280,6 +291,15 @@ static unsigned char edittable[] =
 	SK(SK_PAD_COMMA),0,             A_NOACTION|A_EXTRA,   ',',0,
 	SK(SK_PAD_ZERO),0,              A_NOACTION|A_EXTRA,   '0',0,
 	SK(SK_PAD_CENTER),0,            A_NOACTION,
+	SK(SK_CTL_UP_ARROW),0,          A_NOACTION,
+	SK(SK_CTL_DOWN_ARROW),0,        A_NOACTION,
+	SK(SK_SHIFT_UP_ARROW),0,        A_NOACTION,
+	SK(SK_SHIFT_DOWN_ARROW),0,      A_NOACTION,
+	SK(SK_SHIFT_DELETE),0,          A_NOACTION,
+	SK(SK_PAGE_UP),0,               A_NOACTION,
+	SK(SK_PAGE_DOWN),0,             A_NOACTION,
+	SK(SK_SHIFT_LEFT_ARROW),0,      A_NOACTION,
+	SK(SK_SHIFT_RIGHT_ARROW),0,     A_NOACTION,
 	ESC,'[','M',0,                  EC_X11MOUSE,    /* X11 mouse report */
 	ESC,'[','<',0,                  EC_X116MOUSE,   /* X11 1006 mouse report */
 	ESC,'[','2','0','0','~',0,      A_START_PASTE,  /* open paste bracket */
