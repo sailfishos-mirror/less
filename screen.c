@@ -272,6 +272,9 @@ static constant char
  * and the mapping of the AT_COLOR value may include the 4 attribute bits. */
 static int attrbits = 0;
 static int attrcolor = -1;
+static int termcap_debug;
+static int no_alt_screen;               /* sc_init does not switch to alt screen */
+static int above_mem, below_mem;        /* Memory retained above/below screen */
 #endif
 
 /* term_init has been called; terminal is ready for use by less */
@@ -289,9 +292,7 @@ public int bo_s_width, bo_e_width;      /* Printing width of boldface seq */
 public int ul_s_width, ul_e_width;      /* Printing width of underline seq */
 public int so_s_width, so_e_width;      /* Printing width of standout seq */
 public int bl_s_width, bl_e_width;      /* Printing width of blink seq */
-public int above_mem, below_mem;        /* Memory retained above/below screen */
 public int can_goto_line;               /* Can move cursor to any line */
-public int clear_bg;                    /* Clear fills with background color */
 public lbool missing_cap = FALSE;       /* Some capability is missing */
 public constant char *kent = NULL;      /* Keypad ENTER sequence */
 public lbool kent_mapped = FALSE;       /* Keypad ENTER is mapped to a command */
@@ -299,8 +300,6 @@ public lbool term_addrs = FALSE;        /* "ti" has been sent to terminal */
 public lbool full_screen = TRUE;        /* We're using all lines of terminal */
 
 static int attrmode = AT_NORMAL; /* current attributes (AT_* bits) */
-static int termcap_debug = -1;
-static int no_alt_screen;       /* sc_init does not switch to alt screen */
 extern int binattr;
 extern lbool one_screen;
 extern int shell_lines;
@@ -1410,16 +1409,15 @@ public void init_win_colors(void)
 #endif /* MSDOS_COMPILER */
 
 /*
- * Get terminal capabilities via termcap.
+ * Get permanent terminal characteristics.
+ * Called once at startup.
  */
 public void get_term(void)
 {
-	termcap_debug = !isnullenv(lgetenv("LESS_TERMCAP_DEBUG"));
 #if MSDOS_COMPILER
 	auto_wrap = 1;
 	defer_wrap = 0;
 	can_goto_line = 1;
-	clear_bg = 1;
 	/*
 	 * Set up default colors.
 	 * The xx_s_width and xx_e_width vars are already initialized to 0.
@@ -1457,15 +1455,25 @@ public void get_term(void)
 #endif
 #endif
 	init_win_colors();
+#else
+	termcap_debug = !isnullenv(lgetenv("LESS_TERMCAP_DEBUG"));
+#endif /* MSDOS_COMPILER */
+	update_term();
+}
 
+/*
+ * Get terminal characteristics which may change during execution (size, etc).
+ * May be called multiple times.
+ */
+public void update_term(void)
+{
+#if MSDOS_COMPILER
 	/*
 	 * Get size of the screen.
 	 */
 	scrsize();
 	pos_init();
-
-#else /* !MSDOS_COMPILER */
-{
+#else
 	constant char *t1;
 	constant char *t2;
 	constant char *term;
@@ -1524,7 +1532,6 @@ public void get_term(void)
 	defer_wrap = ltgetflag("xenl", "xn");
 	above_mem = ltgetflag("da", "da");
 	below_mem = ltgetflag("db", "db");
-	clear_bg = ltgetflag("bce", "ut");
 	no_alt_screen = ltgetflag("nrrmc", "NR");
 
 	/*
@@ -1717,8 +1724,7 @@ public void get_term(void)
 		 */
 		no_back_scroll = TRUE;
 	}
-}
-#endif /* MSDOS_COMPILER */
+#endif
 }
 
 #if !MSDOS_COMPILER
@@ -2426,32 +2432,10 @@ public void line_left(void)
 
 /*
  * Check if the console size has changed and reset internals 
- * (in lieu of SIGWINCH for WIN32).
+ * (for systems without SIGWINCH).
  */
 public void check_winch(void)
 {
-#if MSDOS_COMPILER==WIN32C
-	CONSOLE_SCREEN_BUFFER_INFO scr;
-	COORD size;
-
-	if (con_out == INVALID_HANDLE_VALUE)
-		return;
- 
-	flush();
-	GetConsoleScreenBufferInfo(con_out, &scr);
-	size.Y = scr.srWindow.Bottom - scr.srWindow.Top + 1;
-	size.X = scr.srWindow.Right - scr.srWindow.Left + 1;
-	if (size.Y != sc_height || size.X != sc_width)
-	{
-		sc_height = size.Y;
-		sc_width = size.X;
-		if (!no_init && con_out_ours == con_out)
-			SetConsoleScreenBufferSize(con_out, size);
-		pos_init();
-		screen_size_changed();
-		screen_trashed();
-	}
-#endif
 }
 
 /*
@@ -3160,12 +3144,11 @@ public int apply_at_specials(int attr)
  */
 public void putbs(void)
 {
+#if !MSDOS_COMPILER
 	if (termcap_debug)
 		putstr("<bs>");
 	else
-	{
-#if !MSDOS_COMPILER
-	ltputs(sc_backspace, 1, putchr);
+		ltputs(sc_backspace, 1, putchr);
 #else
 	int row, col;
 
@@ -3194,7 +3177,6 @@ public void putbs(void)
 		return;
 	_settextposition(row, col-1);
 #endif /* MSDOS_COMPILER */
-	}
 }
 
 #if MSDOS_COMPILER==WIN32C
@@ -3509,6 +3491,7 @@ static lbool win32_window_event(XINPUT_RECORD *xip)
 {
 	if (xip->ir.EventType != WINDOW_BUFFER_SIZE_EVENT)
 		return (FALSE);
+	sigs |= S_WINCH;
 	win32_enqueue(READ_AGAIN);
 	return (TRUE);
 }
