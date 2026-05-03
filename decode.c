@@ -219,6 +219,8 @@ static unsigned char cmdtable[] =
 	SK(SK_BACKTAB),0,               A_NOACTION,
 	SK(SK_BACKSPACE),0,             A_NOACTION,
 	SK(SK_CTL_BACKSPACE),0,         A_NOACTION,
+	'\b',0,                         A_NOACTION,
+	'\177',0,                       A_NOACTION,
 
 	ESC,'[','2','0','0','~',0,      A_START_PASTE,
 	ESC,'[','2','0','1','~',0,      A_END_PASTE,
