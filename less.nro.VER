@@ -3196,6 +3196,19 @@ sets an OSC 8 handler for opening OSC 8 links containing a URI with that scheme.
 .IP LESS_OSC8_OPEN_ANY
 Sets an OSC 8 handler for opening OSC 8 links for which there is 
 no specific LESS_OSC8_OPEN_xxx handler set for the "xxx" scheme.
+.IP LESS_SHELL_COPTION
+Normally when executing a shell command
+.B cmd
+(via \fB!\fP, \fB#\fP, or \fB|\fP, or a LESSOPEN command),
+if the SHELL environment variable is set, the command
+is invoked as "\fB$SHELL -c cmd\fP".
+If the LESS_SHELL_COPTION environment variable is set, its value
+is used instead of "\fB-c\fP" in that invocation.
+If LESS_SHELL_COPTION is set to a single dash,
+.B less
+acts as if SHELL were not set, and therefore invokes
+.B cmd
+directly.
 .IP LESS_SHELL_LINES
 When the
 .B "\-F"

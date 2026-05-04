@@ -557,26 +557,30 @@ static FILE * shellcmd(constant char *cmd)
 	shell = lgetenv("SHELL");
 	if (!isnullenv(shell))
 	{
-		char *scmd;
-		char *esccmd;
+		constant char *copt = shell_coption();
 
 		/*
 		 * Read the output of <$SHELL -c cmd>.  
 		 * Escape any metacharacters in the command.
 		 */
-		esccmd = shell_quote(cmd);
-		if (esccmd == NULL)
+		if (copt == NULL)
 		{
 			fd = popen(cmd, "r");
 		} else
 		{
-			constant char *copt = shell_coption();
-			size_t len = strlen(shell) + strlen(esccmd) + strlen(copt) + 3;
-			scmd = (char *) ecalloc(len, sizeof(char));
-			SNPRINTF3(scmd, len, "%s %s %s", shell, copt, esccmd);
-			free(esccmd);
-			fd = popen(scmd, "r");
-			free(scmd);
+            char *esccmd = shell_quote(cmd);
+			if (esccmd == NULL)
+			{
+				fd = popen(cmd, "r");
+			} else
+			{
+				size_t len = strlen(shell) + strlen(esccmd) + strlen(copt) + 3;
+                char *scmd = (char *) ecalloc(len, sizeof(char));
+				SNPRINTF3(scmd, len, "%s %s %s", shell, copt, esccmd);
+				fd = popen(scmd, "r");
+				free(scmd);
+				free(esccmd);
+			}
 		}
 	} else
 #endif
@@ -1124,7 +1128,12 @@ public lbool curr_ifile_changed(void)
  */
 public constant char * shell_coption(void)
 {
-	return ("-c");
+	constant char *copt = lgetenv("LESS_SHELL_COPTION");
+	if (isnullenv(copt))
+		copt = "-c";
+	else if (strcmp(copt, "-") == 0)
+		copt = NULL;
+	return copt;
 }
 
 /*

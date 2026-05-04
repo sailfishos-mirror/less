@@ -133,14 +133,19 @@ public void lsystem(constant char *cmd, constant char *donemsg)
 			p = save(shell);
 		else
 		{
-			char *esccmd = shell_quote(cmd);
-			if (esccmd != NULL)
+			constant char *copt = shell_coption();
+			if (copt == NULL)
+				p = save(cmd);
+			else
 			{
-				constant char *copt = shell_coption();
-				size_t len = strlen(shell) + strlen(esccmd) + strlen(copt) + 3;
-				p = (char *) ecalloc(len, sizeof(char));
-				SNPRINTF3(p, len, "%s %s %s", shell, copt, esccmd);
-				free(esccmd);
+				char *esccmd = shell_quote(cmd);
+				if (esccmd != NULL)
+				{
+					size_t len = strlen(shell) + strlen(esccmd) + strlen(copt) + 3;
+					p = (char *) ecalloc(len, sizeof(char));
+					SNPRINTF3(p, len, "%s %s %s", shell, copt, esccmd);
+					free(esccmd);
+				}
 			}
 		}
 	}
