@@ -41,7 +41,7 @@ public lbool    quitting = FALSE;
 public lbool    dohelp = FALSE;
 public char *   init_header = NULL;
 public char *   no_config = NULL;
-static int      secure_allow_features;
+static unsigned int secure_allow_features;
 
 #if LOGFILE
 public int      logfile = -1;
@@ -191,6 +191,11 @@ static void init_secure(void)
 	if (!isnullenv(str))
 		secure_allow_features = parse_csl_bitmap(str,
 		    security_features, countof(security_features), "LESSSECURE_ALLOW");
+
+	str = lgetenv("LESSSECURE_DISALLOW");
+	if (!isnullenv(str))
+		secure_allow_features &=~ parse_csl_bitmap(str,
+		    security_features, countof(security_features), "LESSSECURE_DISALLOW");
 #endif
 }
 
@@ -605,7 +610,7 @@ public void quit(int status)
 /*
  * Are all the features in the features mask allowed by security?
  */
-public int secure_allow(int features)
+public lbool secure_allow(int features)
 {
 	return ((secure_allow_features & features) == features);
 }

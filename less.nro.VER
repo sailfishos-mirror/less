@@ -2950,8 +2950,12 @@ LESSSECURE_ALLOW=hist,edit
 were set, all of the above features would be disabled 
 except for history files and the edit command.
 .PP
+The LESSSECURE_DISALLOW environment variable can be set to a comma-separated list
+of names of features which are selectively disabled when LESSSECURE is not set.
+.PP
 Less can also be compiled to be permanently in "secure" mode.
-In that case, the LESSSECURE and LESSSECURE_ALLOW variables are ignored.
+In that case, all of the above features are disabled,
+and the LESSSECURE, LESSSECURE_ALLOW and LESSSECURE_DISALLOW variables are ignored.
 .
 .SH "COMPATIBILITY WITH MORE"
 If the environment variable LESS_IS_MORE is set to 1,
