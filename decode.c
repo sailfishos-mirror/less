@@ -978,13 +978,13 @@ static int cmd_decode(struct tablelist *tlist, constant char *cmd, lbool anchore
 		table = cmd_next_entry(table, tlist->t_end, &taction, &textra, &tcmdlen);
 		if (table == NULL)
 		{
-			/* Truncated entry at end of table; move to next table. */
+			/* Truncated/malformed entry; ignore this entry and move to next table. */
 			tlist = tlist->t_next;
 			continue;
 		}
 		if (table >= endtable)
 		{
-			/* Last entry in table; move to next table. */
+			/* Last entry in table; process this entry then move to next table. */
 			tlist = tlist->t_next;
 			table = NULL;
 		}
