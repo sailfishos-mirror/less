@@ -3202,6 +3202,9 @@ See discussion under SECURITY.
 .IP LESSSECURE_ALLOW
 Enables individual features which are normally disabled by LESSSECURE.
 See discussion under SECURITY.
+.IP LESSSECURE_DISALLOW
+When LESSSECURE is not set, LESSSECURE_DISALLOW can disable individual features.
+See discussion under SECURITY.
 .IP LESSSEPARATOR
 String to be appended to a directory name in filename completion
 (default "\e" on MS-DOS, Windows, and OS/2; otherwise "/").
