@@ -18,7 +18,7 @@ man:?*)
     ;;
 
 *)
-    echo "invalid man link -- '$1'"
+    echo "invalid man link: '$1'"
     exit 1
     ;;
 esac

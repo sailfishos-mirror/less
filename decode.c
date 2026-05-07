@@ -669,6 +669,7 @@ static int mouse_button_left(int x, int y, lbool down, lbool drag)
 #if OSC8_LINK
 		if (secure_allow(SF_OSC8_OPEN))
 		{
+			cmd_exec();
 			if (osc8_click(y, x))
 				return (A_NOACTION);
 		}
@@ -677,6 +678,7 @@ static int mouse_button_left(int x, int y, lbool down, lbool drag)
 #endif /* OSC8_LINK */
 		if (y < sc_height-1 && y == last_click_y)
 		{
+			cmd_exec();
 			setmark('#', y, 0);
 			screen_trashed();
 		}

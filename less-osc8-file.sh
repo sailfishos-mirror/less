@@ -17,21 +17,21 @@ file://*/*)
 
     case $localhost in
     */* | '')
-        echo "unable to detect local hostname -- '$localhost'"
+        echo "unable to detect local hostname: '$localhost'"
         exit 1
         ;;
     "$linkhost")
         less -- "/${1#file://*/}"
         ;;
     *)
-        echo "cannot open remote file -- '$1'"
+        echo "cannot open remote file: '$1'"
         exit 1
     ;;
     esac
     ;;
 
 *)
-    echo "invalid file link -- '$1'"
+    echo "invalid file link: '$1'"
     exit 1
     ;;
 esac
