@@ -113,6 +113,8 @@
 * Fix erroneous display after certain messages are displayed in a
   very narrow terminal (github #760).
 
+* Don't init terminal if stdout is not a tty (github #768).
+
 ======================================================================
 
 	Major changes between "less" versions 691 and 692

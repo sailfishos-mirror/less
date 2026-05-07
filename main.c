@@ -305,7 +305,8 @@ int main(int argc, constant char *argv[])
 		quit(QUIT_OK);
 	}
 
-	get_term();
+	if (is_tty)
+		get_term();
 	expand_cmd_tables();
 
 #if EDITOR
