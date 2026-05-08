@@ -678,9 +678,7 @@ links using the "xxx" scheme cannot be opened.
 However, there are default handlers for the
 schemes "man" (used when LESS_OSC8_OPEN_man is not set)
 and "file" (used when LESS_OSC8_OPEN_file is not set),
-which should work on systems which provide the
-.BR bash (1)
-shell.
+which should work on systems which provide a POSIX-compatible shell.
 If you use LESS_OSC8_OPEN_ANY to override LESS_OSC8_OPEN_file, you must
 set LESS_OSC8_OPEN_file to "\-" to indicate that the default value
 should not be used, and likewise for LESS_OSC8_OPEN_man.
