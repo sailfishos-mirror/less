@@ -3446,7 +3446,7 @@ static lbool win32_key_event(XINPUT_RECORD *xip, char *pch)
 		for (p = utf8; p < up; ++p)
 			 win32_enqueue((unsigned char) *p);
 	}
-	return (TRUE);
+	return (pch == NULL);
 }
 
 /*
