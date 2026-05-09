@@ -96,15 +96,15 @@ install-strip:
 	${MAKE} INSTALL_PROGRAM='${INSTALL_PROGRAM} -s' install
 
 installdirs: mkinstalldirs
-	${srcdir}/mkinstalldirs ${DESTDIR}${bindir} ${DESTDIR}${libexecdir} ${DESTDIR}${mandir}/man${manext}
+	${srcdir}/mkinstalldirs ${DESTDIR}${bindir} ${DESTDIR}${libexecdir} ${DESTDIR}${mandir}/man${manprogext} ${DESTDIR}${mandir}/man${manfileext}
 
 uninstall:
 	rm -f ${DESTDIR}${bindir}/${binprefix}less$(EXEEXT)
 	rm -f ${DESTDIR}${bindir}/${binprefix}lesskey$(EXEEXT)
 	rm -f ${DESTDIR}${bindir}/${libexecprefix}lessecho$(EXEEXT)
-	rm -f ${DESTDIR}${mandir}/man${manext}/${manprefix}less.${manext}
-	rm -f ${DESTDIR}${mandir}/man${manext}/${manprefix}lesskey.${manext}
-	rm -f ${DESTDIR}${mandir}/man${manext}/${manprefix}lessecho.${manext}
+	rm -f ${DESTDIR}${mandir}/man${manprogext}/${manprefix}less.${manprogext}
+	rm -f ${DESTDIR}${mandir}/man${manfileext}/${manprefix}lesskey.${manfileext}
+	rm -f ${DESTDIR}${mandir}/man${manprogext}/${manprefix}lessecho.${manprogext}
 
 info:
 install-info:
