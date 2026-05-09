@@ -3468,7 +3468,7 @@ static lbool win32_key_event(XINPUT_RECORD *xip, char *pch)
 	}
 
 	if (win32_scan_code(xip))
-		return (TRUE);
+		return (pch == NULL);
 
 	repeat = xip->ir.Event.KeyEvent.wRepeatCount;
 	if (repeat > WIN32_MAX_REPEAT)
@@ -3481,7 +3481,7 @@ static lbool win32_key_event(XINPUT_RECORD *xip, char *pch)
 		for (p = utf8; p < up; ++p)
 			 win32_enqueue((unsigned char) *p);
 	}
-	return (TRUE);
+	return (pch == NULL);
 }
 
 /*

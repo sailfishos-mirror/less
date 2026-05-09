@@ -376,11 +376,14 @@ static void close_file(void)
 	 * Save the current position so that we can return to
 	 * the same position if we edit this file again.
 	 */
-	get_scrpos(&scrpos, TOP);
-	if (scrpos.pos != NULL_POSITION)
+	if (is_tty)
 	{
-		store_pos(curr_ifile, &scrpos);
-		lastmark();
+		get_scrpos(&scrpos, TOP);
+		if (scrpos.pos != NULL_POSITION)
+		{
+			store_pos(curr_ifile, &scrpos);
+			lastmark();
+		}
 	}
 	/*
 	 * Close the file descriptor, unless it is a pipe.

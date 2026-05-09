@@ -1103,6 +1103,7 @@ v698  4/23/26   Fix bad display after message in narrow terminal; replace
                 LESS_OSC8_xxx with LESS_OSC8_OPEN_xxx; add \kpe to lesskey.
 v699  4/23/26   Add less-osc8-*.bash files to distribution.
 v700  4/30/26   Add \kpe to lesskey; improve less-osc8-* scripts.
+v701
 v702
 */
 

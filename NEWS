@@ -11,7 +11,7 @@
 
 ======================================================================
 
-	Major changes between "less" versions 692 and 700
+	Major changes between "less" versions 692 and 701
 
 * Add --hilite-target option and -DJ to color target line (github #745).
 
@@ -112,6 +112,8 @@
 
 * Fix erroneous display after certain messages are displayed in a
   very narrow terminal (github #760).
+
+* Don't init terminal if stdout is not a tty (github #768).
 
 ======================================================================
 

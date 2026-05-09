@@ -1478,6 +1478,8 @@ public void commands(void)
 			c = getcc();
 
 	again:
+		if (c == READ_AGAIN)
+			continue;
 		if (sigs)
 			continue;
 
