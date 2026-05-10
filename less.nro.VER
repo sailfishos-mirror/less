@@ -677,9 +677,10 @@ which invokes the program
 .BR less\-osc8\-open (1).
 This program will open links with the
 schemes "man" (by running
-.BR man (1)
+.BR man (1))
 or "file" (by running another instance of
-.BR less (1).
+.BR less (1)
+if the file is local).
 .B less\-osc8\-open
 should work on systems which provide a POSIX-compatible shell.
 .PP
