@@ -652,11 +652,11 @@ value of the environment variable after a space,
 and the resulting string is executed as a shell command.
 .PP
 For example, if you wish to open https links by invoking a program
-called "mybrowser" with a "--new-window" option, you could set
+called "mybrowser" with a "\-\-new\-window" option, you could set
 .PP
 .EX
 .nf
-LESS_OSC8_OPEN_https="mybrowser --new-window"
+LESS_OSC8_OPEN_https="mybrowser \-\-new\-window"
 .fi
 .EE
 .PP
@@ -672,13 +672,16 @@ LESS_OSC8_OPEN_xxx variable is not set,
 the variable LESS_OSC8_OPEN_ANY is tried.
 If neither LESS_OSC8_OPEN_xxx nor LESS_OSC8_OPEN_ANY is set,
 links using the "xxx" scheme cannot be opened.
-However, there are default handlers for the
-schemes "man" (used when LESS_OSC8_OPEN_man is not set)
-and "file" (used when LESS_OSC8_OPEN_file is not set),
-which should work on systems which provide a POSIX-compatible shell.
-If you use LESS_OSC8_OPEN_ANY to override LESS_OSC8_OPEN_file, you must
-set LESS_OSC8_OPEN_file to "\-" to indicate that the default value
-should not be used, and likewise for LESS_OSC8_OPEN_man.
+However, there is a default value for LESS_OSC8_OPEN_ANY
+which invokes the program
+.BR less\-osc8\-open (1).
+This program will open links with the
+schemes "man" (by running
+.BR man (1)
+or "file" (by running another instance of
+.BR less (1).
+.B less\-osc8\-open
+should work on systems which provide a POSIX-compatible shell.
 .PP
 Any shell metacharacters such as semicolons, dollar signs, ampersands, etc.
 in the URI will be shell-escaped when %O is expanded.
@@ -3183,6 +3186,9 @@ sets an OSC 8 handler for opening OSC 8 links containing a URI with that scheme.
 .IP LESS_OSC8_OPEN_ANY
 Sets an OSC 8 handler for opening OSC 8 links for which there is 
 no specific LESS_OSC8_OPEN_xxx handler set for the "xxx" scheme.
+.IP LESS_OSC8_OPEN_NONE
+Sets an OSC 8 handler for opening OSC 8 links which contain no scheme
+(that is, there is no colon in the URI).
 .IP LESS_SHELL_LINES
 When the
 .B "\-F"
