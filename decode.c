@@ -300,14 +300,14 @@ static char dflt_vartable[] =
 #else
 		"-less-osc8-man"
 #endif
-		" %O\0"
+		"\0"
 	"LESS_OSC8_OPEN_file\0@"
 #ifdef LIBEXECDIR
 		"-" LIBEXECDIR "/less-osc8-file"
 #else
 		"-less-osc8-file"
 #endif
-		" %O\0"
+		"\0"
 };
 
 /*
