@@ -649,7 +649,7 @@ The value of the environment variable is then expanded in the same way as
 prompt strings (in particular, any instance of "%O" is replaced with
 the shell-escaped URI).
 Any prompt metacharacters (such as percent, dot, colon, backslash, etc.)
-intended to be taken literally in the LESS_OPEN_xxx variable must be
+intended to be taken literally in the LESS_OSC8_OPEN_xxx variable must be
 escaped with a backslash (see the PROMPTS section for details).
 .PP
 In a most cases the LESS_OSC8_OPEN_xxx value should be the name of a
