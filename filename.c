@@ -568,14 +568,14 @@ static FILE * shellcmd(constant char *cmd)
 			fd = popen(cmd, "r");
 		} else
 		{
-            char *esccmd = shell_quote(cmd);
+			char *esccmd = shell_quote(cmd);
 			if (esccmd == NULL)
 			{
 				fd = popen(cmd, "r");
 			} else
 			{
 				size_t len = strlen(shell) + strlen(esccmd) + strlen(copt) + 3;
-                char *scmd = (char *) ecalloc(len, sizeof(char));
+				char *scmd = (char *) ecalloc(len, sizeof(char));
 				SNPRINTF3(scmd, len, "%s %s %s", shell, copt, esccmd);
 				fd = popen(scmd, "r");
 				free(scmd);
