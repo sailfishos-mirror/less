@@ -58,7 +58,7 @@ open_man() {
 }
 
 case $1 in
-file://*) open_file "$1" ;;
+file:*) open_file "$1" ;;
 man:*) open_man "$1" ;;
 *) echo "unsupported link type: $1"; exit 1 ;;
 esac
