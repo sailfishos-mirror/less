@@ -1856,6 +1856,7 @@ public lbool osc8_click(int sindex, int col)
 	clickpos = pos_from_col(linepos, col, NULL_POSITION, -1);
 	if (clickpos == NULL_POSITION)
 		return FALSE;
+	linepos = beginning_of_line(linepos);
 	if (forw_raw_line(linepos, &line, &line_len) == NULL_POSITION)
 		return FALSE;
 	r = osc8_search_line(SRCH_FORW|SRCH_OSC8, linepos, line, line_len, NULL, clickpos, &matches);
