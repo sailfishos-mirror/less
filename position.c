@@ -291,7 +291,7 @@ static int pos_shift(POSITION linepos, size_t choff)
  * Return the position of the first char of the line containing tpos.
  * Thus if tpos is the first char of its line, just return tpos.
  */
-static POSITION beginning_of_line(POSITION tpos)
+public POSITION beginning_of_line(POSITION tpos)
 {
 	ch_seek(tpos);
 	while (ch_tell() != ch_zero())

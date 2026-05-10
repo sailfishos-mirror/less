@@ -310,26 +310,17 @@ static unsigned char edittable[] =
 
 /*
  * Default environment variables.
- * Since C cannot initialize a char array to a string literal followed by
- * individual chars, we use '@' as a placeholder for the action byte, and
- * replace it with the actual action byte in init_cmds().
+ * Note: "\201" is (A_EXTRA|EV_OK).
  */
 static char dflt_vartable[] =
 {
-	"LESS_OSC8_OPEN_man\0@"
+	"LESS_OSC8_OPEN_ANY\0\201"
 #ifdef LIBEXECDIR
-		"-" LIBEXECDIR "/less-osc8-man"
+		"-" LIBEXECDIR "/less-osc8-open"
 #else
-		"-less-osc8-man"
+		"-less-osc8-open"
 #endif
-		" %O\0"
-	"LESS_OSC8_OPEN_file\0@"
-#ifdef LIBEXECDIR
-		"-" LIBEXECDIR "/less-osc8-file"
-#else
-		"-less-osc8-file"
-#endif
-		" %O\0"
+		"\0"
 };
 
 /*
@@ -456,12 +447,6 @@ public void init_cmds(void)
 {
 	struct tablelist *t;
 	unsigned char *udflt_vartable = (unsigned char *) dflt_vartable;
-	int i;
-
-	/* Replace action byte placeholders in dflt_vartable. */
-	for (i = 0;  i < sizeof(dflt_vartable);  i++)
-		if (udflt_vartable[i] == '@')
-			udflt_vartable[i] = EV_OK|A_EXTRA;
 
 	/*
 	 * Add the default command tables.

@@ -685,22 +685,19 @@ selected by a previous \*^O\*^N or \*^O\*^P command.
 The shell command is given by the environment variable
 named "LESS_OSC8_OPEN_xxx"
 where "xxx" is the scheme from the URI (the part before the first colon),
-or is empty if there is no colon in the URI.
-The value of the environment variable is then expanded in the same way as
-prompt strings (in particular, any instance of "%O" is replaced with
-the shell-escaped URI).
-Any prompt metacharacters (such as percent, dot, colon, backslash, etc.)
-intended to be taken literally in the LESS_OPEN_xxx variable must be
-escaped with a backslash (see the PROMPTS section for details).
+converted to lowercase.
+If there is no colon in the URI, the environment variable
+LESS_OSC8_OPEN_NONE is used.
+The URI from the hyperlink is then shell-escaped and appended to the
+value of the environment variable after a space,
+and the resulting string is executed as a shell command.
 .PP
-In a most cases the LESS_OSC8_OPEN_xxx value should be the name of a
-program that can open the URI, with "%O" as its sole parameter.
-For example, if "mybrowser.exe" is the name of a program that can
-open an http URI, you could enable opening of http links by setting
+For example, if you wish to open https links by invoking a program
+called "mybrowser" with a "\-\-new\-window" option, you could set
 .PP
 .EX
 .nf
-LESS_OSC8_OPEN_http="mybrowser\e.exe %O"
+LESS_OSC8_OPEN_https="mybrowser \-\-new\-window"
 .fi
 .EE
 .PP
@@ -716,13 +713,16 @@ LESS_OSC8_OPEN_xxx variable is not set,
 the variable LESS_OSC8_OPEN_ANY is tried.
 If neither LESS_OSC8_OPEN_xxx nor LESS_OSC8_OPEN_ANY is set,
 links using the "xxx" scheme cannot be opened.
-However, there are default handlers for the
-schemes "man" (used when LESS_OSC8_OPEN_man is not set)
-and "file" (used when LESS_OSC8_OPEN_file is not set),
-which should work on systems which provide a POSIX-compatible shell.
-If you use LESS_OSC8_OPEN_ANY to override LESS_OSC8_OPEN_file, you must
-set LESS_OSC8_OPEN_file to "\-" to indicate that the default value
-should not be used, and likewise for LESS_OSC8_OPEN_man.
+However, there is a default value for LESS_OSC8_OPEN_ANY
+which invokes the program
+.BR less\-osc8\-open (1).
+This program will open links with the
+schemes "man" (by running
+.BR man (1)
+or "file" (by running another instance of
+.BR less (1).
+.B less\-osc8\-open
+should work on systems which provide a POSIX-compatible shell.
 .PP
 Any shell metacharacters such as semicolons, dollar signs, ampersands, etc.
 in the URI will be shell-escaped when %O is expanded.
@@ -2770,10 +2770,6 @@ The line to be used is determined by the \fIX\fP, as with the %b option.
 Replaced by the line number of the last line in the input file.
 .IP "%m"
 Replaced by the total number of input files.
-.IP "%O"
-Replaced by the shell-escaped URI of the currently selected OSC 8 hyperlink,
-or a question mark if no hyperlink is selected.
-This is used by OSC 8 handlers as explained in the \*^O\*^O command description.
 .IP "%p\fIX\fP"
 Replaced by the percent into the current input file, based on byte offsets.
 The line used is determined by the \fIX\fP as with the %b option.
@@ -3244,6 +3240,9 @@ sets an OSC 8 handler for opening OSC 8 links containing a URI with that scheme.
 .IP LESS_OSC8_OPEN_ANY
 Sets an OSC 8 handler for opening OSC 8 links for which there is 
 no specific LESS_OSC8_OPEN_xxx handler set for the "xxx" scheme.
+.IP LESS_OSC8_OPEN_NONE
+Sets an OSC 8 handler for opening OSC 8 links which contain no scheme
+(that is, there is no colon in the URI).
 .IP LESS_SHELL_COPTION
 Normally when executing a shell command
 .B cmd

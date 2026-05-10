@@ -24,8 +24,8 @@
 
 * Add -DT option to format tilde lines (github #725).
 
-* Change OSC 8 link handling: replace LESS_OSC8_xxx with LESS_OSC8_OPEN_xxx,
-  and replace %o in prompt strings with shell-quoted %O.
+* Change OSC 8 link handling: replace LESS_OSC8_xxx with LESS_OSC8_OPEN_xxx.
+  Remove %O from prompt expansion as no longer needed.
   Any use of environment variables LESS_OSC8_xxx need to be manually
   changed to use LESS_OSC8_OPEN_xxx.
 
@@ -114,6 +114,9 @@
   very narrow terminal (github #760).
 
 * Don't init terminal if stdout is not a tty (github #768).
+
+* Fix bug clicking OSC 8 link that crosses a screen line boundary
+  (github #775).
 
 ======================================================================
 

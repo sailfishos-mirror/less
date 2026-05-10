@@ -65,7 +65,6 @@ public POSITION osc8_uri_start = NULL_POSITION;
 public POSITION osc8_uri_end = NULL_POSITION;
 public POSITION osc8_text_start = NULL_POSITION;
 public POSITION osc8_text_end = NULL_POSITION;
-char *osc8_path = NULL;
 char *osc8_uri = NULL;
 constant char *osc8_search_param = NULL;
 #endif
@@ -1857,6 +1856,7 @@ public lbool osc8_click(int sindex, int col)
 	clickpos = pos_from_col(linepos, col, NULL_POSITION, -1);
 	if (clickpos == NULL_POSITION)
 		return FALSE;
+	linepos = beginning_of_line(linepos);
 	if (forw_raw_line(linepos, &line, &line_len) == NULL_POSITION)
 		return FALSE;
 	r = osc8_search_line(SRCH_FORW|SRCH_OSC8, linepos, line, line_len, NULL, clickpos, &matches);
@@ -1917,7 +1917,10 @@ public void osc8_open(void)
 	char env_name[64];
 	size_t scheme_len;
 	constant char *handler;
+	char *cmd;
+	char *uri_q;
 	size_t uri_len;
+	char *p;
 	static constant char *env_name_pfx = "LESS_OSC8_OPEN_";
 
 	if (osc8_linepos == NULL_POSITION)
@@ -1932,7 +1935,7 @@ public void osc8_open(void)
 	}
 	/*
 	 * Read a "handler" shell cmd from environment variable "LESS_OSC8_OPEN_scheme".
-	 * pr_expand the handler cmd (to expand %O -> osc8_path) and execute it.
+	 * Append the URI to the handler as an argument, and execute it.
 	 */
 	uri_len = ptr_diff(op.uri_end, op.uri_start);
 	scheme_len = scheme_length(op.uri_start, uri_len);
@@ -1947,7 +1950,16 @@ public void osc8_open(void)
 		free(param);
 		return;
 	}
-	SNPRINTF3(env_name, sizeof(env_name), "%s%.*s", env_name_pfx, (int) scheme_len, op.uri_start);
+	if (scheme_len == 0)
+	{
+		SNPRINTF1(env_name, sizeof(env_name), "%sNONE", env_name_pfx);
+	} else
+	{
+		SNPRINTF3(env_name, sizeof(env_name), "%s%.*s", env_name_pfx, (int) scheme_len, op.uri_start);
+		for (p = &env_name[strlen(env_name_pfx)];  *p != '\0';  p++)
+			if (ASCII_IS_UPPER(*p))
+				*p = ASCII_TO_LOWER(*p);
+	}
 	handler = lgetenv(env_name);
 	if (isnullenv(handler) || strcmp(handler, "-") == 0)
 		handler = lgetenv("LESS_OSC8_OPEN_ANY");
@@ -1958,26 +1970,25 @@ public void osc8_open(void)
 		error("No handler for \"%s\" link type", &parg);
 		return;
 	}
-	/* {{ ugly global osc8_path }} */
-	osc8_path = saven(op.uri_start, uri_len);
-	handler = pr_expand(handler);
-	free(osc8_path);
-	osc8_path = NULL;
-
+	uri_q = shell_quoten(op.uri_start, uri_len);
+	cmd = ecalloc(strlen(handler) + strlen(uri_q) + 2, sizeof(char));
+	sprintf(cmd, "%s %s", handler, uri_q);
+	free(uri_q);
 	{
-		constant char *cmd = handler;
+		constant char *exec_cmd = cmd;
 		constant char *done_msg = "link done";
 		POSITION save_osc8_linepos = osc8_linepos;
-		if (*cmd == CONTROL('P'))
+		if (*exec_cmd == CONTROL('P'))
 		{
 			done_msg = NULL;
-			cmd++;
+			exec_cmd++;
 		}
-		lsystem(cmd, done_msg);
+		lsystem(exec_cmd, done_msg);
 		/* lsystem reedits the input file which clears the selected
 		 * OSC8 link, so restore it. */
 		osc8_linepos = save_osc8_linepos;
 	}
+	free(cmd);
 }
 
 /*

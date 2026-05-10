@@ -377,20 +377,6 @@ static void protochar(char c, int where)
 #endif
 			ap_int(nifile());
 		break; }
-	case 'O': /* shell-quoted path (URI) of selected OSC8 link */
-#if OSC8_LINK
-		if (osc8_path != NULL)
-		{
-			char *q = shell_quote(osc8_path);
-			if (q != NULL)
-            {
-				ap_str(q);
-                free(q);
-            }
-		} else
-#endif
-			ap_quest();
-		break;
 	case 'p': /* Percent into file (bytes) */
 		pos = curr_byte(where);
 		len = ch_length();
