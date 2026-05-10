@@ -32,7 +32,6 @@ extern int header_lines;
 extern int utf_mode;
 extern IFILE curr_ifile;
 #if OSC8_LINK
-extern char *osc8_path;
 extern POSITION osc8_linepos;
 #endif
 #if EDITOR
