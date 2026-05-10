@@ -1918,6 +1918,7 @@ public void osc8_open(void)
 	size_t scheme_len;
 	constant char *handler;
 	size_t uri_len;
+	char *p;
 	static constant char *env_name_pfx = "LESS_OSC8_OPEN_";
 
 	if (osc8_linepos == NULL_POSITION)
@@ -1947,7 +1948,16 @@ public void osc8_open(void)
 		free(param);
 		return;
 	}
-	SNPRINTF3(env_name, sizeof(env_name), "%s%.*s", env_name_pfx, (int) scheme_len, op.uri_start);
+	if (scheme_len == 0)
+	{
+		SNPRINTF1(env_name, sizeof(env_name), "%sNONE", env_name_pfx);
+	} else
+	{
+		SNPRINTF3(env_name, sizeof(env_name), "%s%.*s", env_name_pfx, (int) scheme_len, op.uri_start);
+		for (p = &env_name[strlen(env_name_pfx)];  *p != '\0';  p++)
+			if (ASCII_IS_UPPER(*p))
+				*p = ASCII_TO_LOWER(*p);
+	}
 	handler = lgetenv(env_name);
 	if (isnullenv(handler) || strcmp(handler, "-") == 0)
 		handler = lgetenv("LESS_OSC8_OPEN_ANY");

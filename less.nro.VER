@@ -644,7 +644,9 @@ selected by a previous \*^O\*^N or \*^O\*^P command.
 The shell command is given by the environment variable
 named "LESS_OSC8_OPEN_xxx"
 where "xxx" is the scheme from the URI (the part before the first colon),
-or is empty if there is no colon in the URI.
+converted to lowercase.
+If there is no colon in the URI, the environment variable
+LESS_OSC8_OPEN_NONE is used.
 The value of the environment variable is then expanded in the same way as
 prompt strings (in particular, any instance of "%O" is replaced with
 the shell-escaped URI).
