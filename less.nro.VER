@@ -2775,7 +2775,7 @@ True if the byte offset of the specified line is known.
 .IP "?B"
 True if the size of current input file is known.
 .IP "?c"
-True if the text is horizontally shifted (%c is not zero).
+True if the text is horizontally shifted (%c is greater than 1).
 .IP "?d\fIX\fP"
 True if the page number of the specified line is known.
 .IP "?e"
