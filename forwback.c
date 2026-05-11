@@ -401,7 +401,7 @@ public void back(int n, POSITION pos, lbool force, lbool only_last, lbool to_new
 		/*
 		 * Get the previous line of input.
 		 */
-		pos = back_line(pos, &newline);
+		pos = back_line(pos, NULL, &newline);
 		if (to_newline && !newline)
 			++n;
 		if (pos == NULL_POSITION)

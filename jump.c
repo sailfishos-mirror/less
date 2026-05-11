@@ -24,6 +24,7 @@ extern int quit_if_one_screen;
 extern lbool one_screen;
 extern lbool full_screen;
 extern POSITION header_start_pos;
+extern POSITION soft_eof;
 
 /*
  * Jump to the end of the file.
@@ -56,7 +57,7 @@ public void jump_forw(void)
 	 * to get to the beginning of the last line.
 	 */
 	pos_clear();
-	pos = back_line(end_pos, NULL);
+	pos = back_line(end_pos, &soft_eof, NULL);
 	if (pos == NULL_POSITION)
 		jump_loc(ch_zero(), sc_height-1);
 	else
@@ -304,7 +305,7 @@ public void jump_loc(POSITION pos, int sline)
 #endif
 				return;
 			}
-			pos = back_line(pos, NULL);
+			pos = back_line(pos, NULL, NULL);
 			if (pos == NULL_POSITION)
 			{
 				/*

@@ -185,7 +185,7 @@ static struct mark * getmark(char c)
 		pos = ch_tell();
 		if (pos == NULL_POSITION)
 			return (NULL);
-		pos = back_line(pos, NULL);
+		pos = back_line(pos, NULL, NULL);
 		if (pos == NULL_POSITION)
 			return (NULL);
 		cmark(m, curr_ifile, pos, sc_height-1);
