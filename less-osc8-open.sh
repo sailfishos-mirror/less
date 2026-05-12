@@ -40,10 +40,17 @@ open_file() {
 # Open a link of the form "man:NAME" or "man:NAME(SECTION)".
 open_man() {
 	case $1 in
-	man:?*\(?*\) )
+	man:?*\(*\) )
 		sect=${1#*\(}; sect=${sect%?}
 		name=${1#man:}; name=${name%%\(*}
-		man "$sect" "$name"
+		case "$sect" in
+		*[![:space:]]* )
+			man "$sect" "$name"
+			;;
+		*)
+			man "$name"
+			;;
+		esac
 		;;
 
 	man:?*)
