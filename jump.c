@@ -33,6 +33,7 @@ public void jump_forw(void)
 {
 	POSITION pos;
 	POSITION end_pos;
+	POSITION bot_pos;
 
 	if (ch_end_seek())
 	{
@@ -40,7 +41,8 @@ public void jump_forw(void)
 		return;
 	}
 	end_pos = ch_tell();
-	if (position(sc_height-1) == end_pos)
+	bot_pos = position(BOTTOM_PLUS_ONE);
+	if (bot_pos == end_pos || (bot_pos == soft_eof && soft_eof != NULL_POSITION))
 	{
 		eof_bell();
 		return;
