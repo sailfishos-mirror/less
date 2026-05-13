@@ -43,14 +43,7 @@ open_man() {
 	man:?*\(*\) )
 		sect=${1#*\(}; sect=${sect%?}
 		name=${1#man:}; name=${name%%\(*}
-		case "$sect" in
-		*[![:space:]]* )
-			man "$sect" "$name"
-			;;
-		*)
-			man "$name"
-			;;
-		esac
+		man ${sect:+"$sect"} "$name"
 		;;
 
 	man:?*)
