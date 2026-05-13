@@ -118,6 +118,10 @@
 * Fix bug clicking OSC 8 link that crosses a screen line boundary
   (github #775).
 
+* Fix beeps when resizing window on Windows (github #771).
+
+* Fix beeps when paging continuously on Windows (github #772).
+
 ======================================================================
 
 	Major changes between "less" versions 691 and 692
