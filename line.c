@@ -79,6 +79,7 @@ static constant char *mid_ansi_chars;
 static constant char *osc_ansi_chars;
 static int osc_ansi_allow_count;
 static long *osc_ansi_allow;
+static lbool in_osc8_link;
 static lbool in_hilite;
 static lbool clear_after_line;
 
@@ -137,6 +138,7 @@ static struct color_map color_map[] = {
 	{ AT_COLOR_SEARCH,         "kG" },
 	{ AT_COLOR_TILDE,          "-d" },
 	{ AT_COLOR_TARGET,         "-u" },
+	{ AT_COLOR_OSC8,           "-u" },
 	{ AT_COLOR_SUBSEARCH(1),   "ky" },
 	{ AT_COLOR_SUBSEARCH(2),   "wb" },
 	{ AT_COLOR_SUBSEARCH(3),   "YM" },
@@ -293,8 +295,15 @@ public void prewind(lbool contig)
 	int ax;
 
 	xbuf_reset(&shifted_ansi);
-	if (contig && linebuf.prev_end != 0)
-		pshift(linebuf.prev_end);
+	if (contig)
+	{
+		if (linebuf.prev_end != 0)
+			pshift(linebuf.prev_end);
+		/* Don't reset in_osc8_link, since we may be in a wrapped OSC 8 sequence. */
+	} else
+	{
+		in_osc8_link = FALSE;
+	}
 	linebuf.print = 6; /* big enough for longest UTF-8 sequence */
 	linebuf.pfx_end = 0;
 	for (linebuf.end = 0; linebuf.end < linebuf.print; linebuf.end++)
@@ -763,7 +772,7 @@ static ansi_state ansi_step2(struct ansi_state *pansi, LWCHAR ch, lbool content)
 			return osc_return(pansi, (pansi->otype == 8) ? OSC8_PARAMS : OSC_STRING, ANSI_MID);
 		/* OSC is untyped */
 		if (IS_CSI_START(ch))
-			return osc_return(pansi, OSC_END_CSI, ANSI_MID);
+			return osc_return(pansi, OSC_STRING_CSI, ANSI_MID);
 		if (ch == '\7')
 			return osc_return(pansi, OSC_END, ANSI_END);
 		return osc_return(pansi, OSC_STRING, ANSI_MID);
@@ -779,16 +788,18 @@ static ansi_state ansi_step2(struct ansi_state *pansi, LWCHAR ch, lbool content)
 		if (IS_CSI_START(ch))
 		{
 			pansi->escs_in_seq++;
-			return osc_return(pansi, OSC_END_CSI, ANSI_MID);
+			return osc_return(pansi,
+					pansi->ostate == OSC8_URI ? OSC8_URI_CSI : OSC_STRING_CSI, ANSI_MID);
 		}
 		/* Stay in same ostate */
 		return ANSI_MID;
-	case OSC_END_CSI:
+	case OSC8_URI_CSI:
+	case OSC_STRING_CSI:
 		/* Got ESC of ST, expect backslash next. */
 		if (ch == '\\')
 			return osc_return(pansi, OSC_END, valid_osc_type(pansi->otype, content) ? ANSI_END : ANSI_ERR);
 		/* ESC not followed by backslash. */
-		return osc_return(pansi, OSC_STRING, ANSI_MID);
+		return osc_return(pansi, pansi->ostate == OSC8_URI_CSI ? OSC8_URI : OSC_STRING, ANSI_MID);
 	case OSC_END:
 		return ANSI_END;
 	case OSC8_NOT:
@@ -867,6 +878,13 @@ static int store_char(LWCHAR ch, int a, constant char *rep, POSITION pos)
 			hl_attr = is_hilited_attr(pos, pos+1, 0, &matches);
 			if (hl_attr == 0 && status_line)
 				hl_attr = line_mark_attr;
+			if (in_osc8_link)
+			{
+				if (hl_attr != 0)
+					hl_attr |= AT_UNDERLINE;
+				else
+					hl_attr = use_color ? AT_COLOR_OSC8 : AT_UNDERLINE;
+			}
 		}
 		if (hl_attr)
 		{
@@ -1196,17 +1214,20 @@ static int store_control_char(LWCHAR ch, constant char *rep, POSITION pos)
 
 static int store_ansi(LWCHAR ch, constant char *rep, POSITION pos)
 {
+	osc8_state prev_ostate = ansi_osc8_state(line_ansi);
 	switch (ansi_step2(line_ansi, ch, pos != NULL_POSITION))
 	{
-	case ANSI_MID:
+	case ANSI_MID: {
 		STORE_CHAR(ch, AT_ANSI, rep, pos);
 		switch (ansi_osc8_state(line_ansi))
 		{
 		case OSC_TYPENUM: case OSC_STRING: hlink_in_line = TRUE; break;
+		case OSC8_PARAMS: in_osc8_link = FALSE; break;
+		case OSC8_URI: if (prev_ostate == OSC8_URI) in_osc8_link = TRUE; break;
 		default: break;
 		}
 		xbuf_add_char(&last_ansi, (char) ch);
-		break;
+		break; }
 	case ANSI_END:
 		STORE_CHAR(ch, AT_ANSI, rep, pos);
 		ansi_done(line_ansi);

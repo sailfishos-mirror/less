@@ -662,6 +662,7 @@ static int color_from_namechar(char namechar)
 	case 'J': return AT_COLOR_TARGET;
 	case 'M': return AT_COLOR_MARK;
 	case 'N': return AT_COLOR_LINENUM;
+	case 'O': return AT_COLOR_OSC8;
 	case 'P': return AT_COLOR_PROMPT;
 	case 'R': return AT_COLOR_RSCROLL;
 	case 'S': return AT_COLOR_SEARCH;

@@ -413,11 +413,12 @@ typedef enum osc8_state {
 	OSC_INTRO,    /* Waiting for intro char, usually ']' */
 	OSC_TYPENUM,  /* Reading OS command type */
 	OSC_STRING,   /* Reading OS command string */
-	OSC_END_CSI,  /* Waiting for backslash after the final ESC. */
+	OSC_STRING_CSI, /* Waiting for backslash after the final ESC. */
 	OSC_END,      /* At end */
 
 	OSC8_PARAMS,  /* In the OSC8 parameters */
 	OSC8_URI,     /* In the OSC8 URI */
+	OSC8_URI_CSI, /* Waiting for backslash after the final ESC. */
 	OSC8_NOT,     /* This is not an OSC8 link */
 } osc8_state;
 
@@ -459,7 +460,8 @@ typedef enum osc8_state {
 #define AT_COLOR_SEARCH   (10 << AT_COLOR_SHIFT)
 #define AT_COLOR_TILDE    (11 << AT_COLOR_SHIFT)
 #define AT_COLOR_TARGET   (12 << AT_COLOR_SHIFT)
-#define AT_COLOR_SS_OFFSET 13  /* largest AT_COLOR_* value + 1 */
+#define AT_COLOR_OSC8     (13 << AT_COLOR_SHIFT)
+#define AT_COLOR_SS_OFFSET 14  /* largest AT_COLOR_* value + 1 */
 #define NUM_SEARCH_COLORS  5
 #define AT_NUM_COLORS      (AT_COLOR_SS_OFFSET + NUM_SEARCH_COLORS)
 #define AT_COLOR_SUBSEARCH(i) ((AT_COLOR_SS_OFFSET+(i)-1) << AT_COLOR_SHIFT)

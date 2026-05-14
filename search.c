@@ -1316,7 +1316,7 @@ static lbool osc8_parse(constant char *line, constant char *line_end, struct osc
 				pop->uri_start = line;
 			}
 			break;
-		case OSC_END_CSI:
+		case OSC8_URI_CSI:
 			if (pop->uri_end == NULL)
 				pop->uri_end = oline;
 			break;

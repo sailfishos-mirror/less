@@ -950,6 +950,8 @@ Mark letters in the status column.
 Line numbers enabled via the
 .B "\-N"
 option.
+.iP "O"
+OSC 8 hyperlinks.
 .IP "P"
 Prompts.
 .IP "R"
