@@ -1106,7 +1106,7 @@ v700  4/30/26   Add \kpe to lesskey; improve less-osc8-* scripts.
 v701            Replace less-osc-*.bash with less-osc8-open.sh; don't init
                 terminal if stdout is not tty; fix bug clicking OSC 8 link
                 in a long line; fix misread chars on Windows; remove %O.
-v702
+v703
 */
 
-char version[] = "702x";
+char version[] = "703x";
